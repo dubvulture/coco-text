@@ -1,3 +1,5 @@
+from __future__ import division, print_function
+
 __author__ = 'andreasveit'
 __version__ = '1.1'
 # Interface for accessing the COCO-Text dataset.
@@ -33,8 +35,6 @@ __version__ = '1.1'
 # extended and adapted by Andreas Veit, 2016
 # revised by Manuel Rota, 2017
 # Licensed under the Simplified BSD License [see bsd.txt]
-
-from __future__ import division, print_function
 
 import copy
 import datetime
@@ -72,7 +72,7 @@ class COCO_Text:
             print('loading annotations into memory...')
             time_t = datetime.datetime.utcnow()
             self.dataset = json.load(open(annotation_file, 'r'))
-            print datetime.datetime.utcnow() - time_t
+            print(datetime.datetime.utcnow() - time_t)
             self.createIndex()
 
     def createIndex(self):
@@ -114,7 +114,7 @@ class COCO_Text:
         :return:
         """
         for key, value in self.dataset['info'].items():
-            print '%s: %s' % (key, value)
+            print('%s: %s' % (key, value))
 
     def getAnnByCat(self, properties):
         """
@@ -280,6 +280,6 @@ class COCO_Text:
             ann['id'] = str(id)
             res.anns[id] = ann
             res.imgToAnns[ann['image_id']].append(id)
-        print 'DONE (t=%0.2fs)' % (datetime.datetime.utcnow() - time_t).total_seconds()
+        print('DONE (t=%0.2fs)' % (datetime.datetime.utcnow() - time_t).total_seconds())
 
         return res

@@ -1,3 +1,5 @@
+from __future__ import division, print_function
+
 __author__ = 'andreasveit'
 __version__ = '1.3'
 
@@ -25,8 +27,6 @@ __version__ = '1.3'
 # Code written by Andreas Veit, 2016
 # revised by Manuel Rota, 2017
 # Licensed under the Simplified BSD License [see bsd.txt]
-
-from __future__ import division, print_function
 
 from copy import copy
 import editdistance
@@ -100,8 +100,8 @@ def evaluateAttribute(groundtruth, evaluation, resultDict, attributes):
     Output:
 
     '''
-    assert 'utf8_string' not in attributes,\
-        'there is a separate function for utf8_string'
+    assert('utf8_string' not in attributes,
+           'there is a separate function for utf8_string')
     res = {}
     for attribute in attributes:
         correct = []
@@ -170,7 +170,7 @@ def evaluateEndToEnd(groundtruth, evaluation,
                     match = eval_box_id
                     if 'utf8_string' in evaluation.anns[eval_box_id]:
                         eval_val = decode(evaluation.anns[eval_box_id]['utf8_string'])
-                        if editdistance.eval(gt_val, eval_val)==0:
+                        if editdistance.eval(gt_val, eval_val) == 0:
                             break
             if match is not None:
                 detectRes['true_positives'].append(
@@ -219,6 +219,7 @@ def evaluateEndToEnd(groundtruth, evaluation,
             'ignore': ignore,
             'accuracy': len(correct)*1.0 / len(correct+incorrect)
         }
+
     return res
 
 
@@ -277,71 +278,63 @@ def printDetailedResults(ct, detection_results, transcription_results, name):
     leg_ot  = ct.getAnnIds(catIds=[LEGIBLE, OTHERS])
     ileg_ot = ct.getAnnIds(catIds=[ILLEGIBLE, OTHERS])
 
-    # Detection results
-    print("\nDetection")
+    if detection_results is not None:
+        # Detection results
+        print("\nDetection")
 
-    print("Recall")
+        print("Recall")
 
-    def recall(data):
-        intersection = inter(found + n_found, data)
-        if len(intersection) > 0:
-            ret = len(inter(found, data))*1. / len(intersection)
-        else:
-            ret = 0
-        return 100*ret
+        def recall(data):
+            intersection = inter(found + n_found, data)
+            if len(intersection) > 0:
+                ret = len(inter(found, data))*1. / len(intersection)
+            else:
+                ret = 0
+            return 100*ret
 
-    print('legible & machine printed: %.2f' % recall(leg_mp))
-    print('legible & handwritten: %.2f' % recall(leg_hw))
-    print('legible & others: %.2f' % recall(leg_ot))
-    print('legible overall: %.2f' % recall(leg_mp + leg_hw + leg_ot))
-    print('illegible & machine printed: %.2f' % recall(ileg_mp))
-    print('illegible & handwritten: %.2f' % recall(ileg_hw))
-    print('illegible & others: %.2f' % recall(ileg_ot))
-    print('illegible overall: %.2f'% recall(ileg_mp + ileg_hw + ileg_ot))
+        print('legible & machine printed: %.2f' % recall(leg_mp))
+        print('legible & handwritten: %.2f' % recall(leg_hw))
+        print('legible & others: %.2f' % recall(leg_ot))
+        print('legible overall: %.2f' % recall(leg_mp + leg_hw + leg_ot))
+        print('illegible & machine printed: %.2f' % recall(ileg_mp))
+        print('illegible & handwritten: %.2f' % recall(ileg_hw))
+        print('illegible & others: %.2f' % recall(ileg_ot))
+        print('illegible overall: %.2f'% recall(ileg_mp + ileg_hw + ileg_ot))
 
-    t_recall = recall(leg_mp + leg_hw + ileg_mp + ileg_hw)
-    print('total recall: %.2f' % t_recall)
-
-
-    print("Precision")
-    t_precision = len(found)*100.0 / (len(found+fp))
-    print('total precision: %.2f' % t_precision)
-
-    print("f-score")
-    f_score = (2 * t_recall * t_precision / (t_recall + t_precision))\
-        if t_recall + t_precision != 0 else 0
-    print('f-score localization: %.2f' % f_score)
+        t_recall = recall(leg_mp + leg_hw + ileg_mp + ileg_hw)
+        print('total recall: %.2f' % t_recall)
 
 
-    # Transcription results
-    print("\nTranscription")
+        print("Precision")
+        t_precision = len(found)*100.0 / (len(found+fp))
+        print('total precision: %.2f' % t_precision)
 
-    transAcc = transcription_results['exact']['accuracy']
-    transAcc1 = transcription_results['distance1']['accuracy']
-    print('accuracy for exact matches: %.2f' % (100*transAcc))
-    print('accuracy for matches with edit distance<=1: %.2f' % (100*transAcc1))
+        print("f-score")
+        f_score = (2 * t_recall * t_precision / (t_recall + t_precision))\
+            if t_recall + t_precision != 0 else 0
+        print('f-score localization: %.2f' % f_score)
 
+    if transcription_results is not None:
+        # Transcription results
+        print("\nTranscription")
 
-    print('\nEnd-to-end')
-    TP_new = len(inter(found, leg_eng_mp+leg_eng_hw)) * transAcc
-    FP_new = len(fp) + len(inter(found, leg_eng_mp+leg_eng_hw)) * (1-transAcc)
-    FN_new = len(inter(n_found, leg_eng_mp+leg_eng_hw))\
-             + len(inter(found, leg_eng_mp+leg_eng_hw))*(1-transAcc)
-    t_recall = 100 * TP_new / (TP_new + FN_new)
-    t_precision = 100 * TP_new / (TP_new + FP_new)\
-        if (TP_new + FP_new) > 0 else 0
-    f_score = (2 * t_recall * t_precision / (t_recall + t_precision))\
-        if (t_recall + t_precision) > 0 else 0
-
-    print('recall: %.2f' % t_recall)
-    print('precision: %.2f' % t_precision)
-    print('End-to-end f-score: %.2f' % f_score)
+        transAcc = transcription_results['exact']['accuracy']
+        transAcc1 = transcription_results['distance1']['accuracy']
+        print('accuracy for exact matches: %.2f' % (100*transAcc))
+        print('accuracy for matches with edit distance<=1: %.2f' % (100*transAcc1))
 
 
+        print('\nEnd-to-end')
+        TP_new = len(inter(found, leg_eng_mp+leg_eng_hw)) * transAcc
+        FP_new = len(fp) + len(inter(found, leg_eng_mp+leg_eng_hw)) * (1-transAcc)
+        FN_new = len(inter(n_found, leg_eng_mp+leg_eng_hw))\
+                 + len(inter(found, leg_eng_mp+leg_eng_hw))*(1-transAcc)
+        t_recall = 100 * TP_new / (TP_new + FN_new)
+        t_precision = 100 * TP_new / (TP_new + FP_new)\
+            if (TP_new + FP_new) > 0 else 0
+        f_score = (2 * t_recall * t_precision / (t_recall + t_precision))\
+            if (t_recall + t_precision) > 0 else 0
 
-
-
-
-
-
-
+        print('recall: %.2f' % t_recall)
+        print('precision: %.2f' % t_precision)
+        print('End-to-end f-score: %.2f' % f_score)
