@@ -264,7 +264,7 @@ class COCO_Text:
 
         set_given = set(annsImgIds)
         set_inter = set_given & set(self.getImgIds())
-        if set_given != intersect:
+        if set_given != set_inter:
             print('Results do not correspond to current coco set')
             print('skipping %d images' % (len(set_given) - len(set_inter)))
         annsImgIds = list(set_inter)
