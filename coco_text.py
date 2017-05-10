@@ -68,7 +68,7 @@ class COCO_Text:
         self.test = []
         self.train = []
         if annotation_file is not None:
-            assert(os.path.isfile(annotation_file), "file does not exist")
+            assert os.path.isfile(annotation_file), "file does not exist"
             print('loading annotations into memory...')
             time_t = datetime.datetime.utcnow()
             self.dataset = json.load(open(annotation_file, 'r'))
@@ -259,7 +259,7 @@ class COCO_Text:
             anns = json.load(open(resFile))
         else:
             anns = resFile
-        assert(type(anns) == list, 'results in not an array of objects')
+        assert type(anns) == list, 'results in not an array of objects'
         annsImgIds = [int(ann['image_id']) for ann in anns]
 
         set_given = set(annsImgIds)

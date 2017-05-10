@@ -100,8 +100,8 @@ def evaluateAttribute(groundtruth, evaluation, resultDict, attributes):
     Output:
 
     '''
-    assert('utf8_string' not in attributes,
-           'there is a separate function for utf8_string')
+    assert 'utf8_string' not in attributes, 'there is a separate function for utf8_string'
+
     res = {}
     for attribute in attributes:
         correct = []
