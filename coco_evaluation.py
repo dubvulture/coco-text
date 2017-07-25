@@ -32,7 +32,7 @@ from copy import copy
 import editdistance
 import re
 
-from utils import *
+from .utils import *
 
 
 
