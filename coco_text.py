@@ -47,7 +47,7 @@ from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle, PathPatch
 from matplotlib.path import Path
 
-from utils import inter
+from .utils import inter
 
 
 
